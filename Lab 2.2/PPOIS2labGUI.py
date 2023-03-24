@@ -85,13 +85,13 @@ def Find(my_w):
     # add one text box
     students = ['Anton','Anna', 'Slava','Ivan']
     variable = StringVar()
-    variable.set("Anton")
+    variable.set(students[0])
     
     opt1 = OptionMenu(
         my_w, 
         variable, 
         *students,
-        command=display_selected
+        command=display_selected 
         )
      
     opt1.grid(row=15,column=2)
