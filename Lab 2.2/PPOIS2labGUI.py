@@ -71,36 +71,48 @@ def Display_rows(my_w,cur,val1,val2):
     my_w.mainloop()
     
 
+
 def Find(my_w):
     my_w.title("Поиск студента")
     my_w.geometry("400x250") 
-
+    def display_selected(choice):
+        choice = variable.get()
+        print(choice)
+        
+        return choice    
     l2 = tk.Label(my_w,  text='Name: ', width=10,anchor="c" )  
-    l2.grid(row=4,column=1) 
+    l2.grid(row=15,column=1) 
     # add one text box
+    students = ['Anton','Anna', 'Slava','Ivan']
+    variable = StringVar()
+    variable.set("Anton")
+    
+    opt1 = OptionMenu(
+        my_w, 
+        variable, 
+        *students,
+        command=display_selected
+        )
+     
+    opt1.grid(row=15,column=2)
 
-    options = StringVar(my_w)
-    options.set("") # default value
-
-    opt1 = OptionMenu(my_w, options, "Anton")
-    opt1.grid(row=4,column=2)
-
-    group = options.get() 
-    f.write('%s' % group +'\n')
+    ch  = display_selected
+    variable.set(ch) 
     b1 = tk.Button(my_w,  text='1', width=10, 
-               command=lambda: Display_find(my_way,cursor,group))  
+               command=lambda: Display_find(my_way,cursor,ch))  
     b1.grid(row=11,column=1)    
 
     my_w.mainloop()
-    
+
 def Display_find(my_w,cur,my_group):
     my_w.title("Найденные студенты")
     my_w.geometry("1200x250") 
+    
     r_set = cur.execute('SELECT * FROM Students4 WHERE FullName=?',(my_group,))
     i=0 # row value inside the loop 
     for student in r_set: 
         for j in range(len(student)):
-            e = tk.Label(my_w, width=10, fg='blue',text=student[j],anchor='d') 
+            e = tk.Label(my_w, width=10, fg='blue',text=student[j],anchor='w') 
             e.grid(row=i, column=j,padx=2) 
         i=i+1
     
@@ -129,7 +141,11 @@ def Display_find(my_w,cur,my_group):
 Find(my_way)
 # Display_Groups(my_way,cursor,121702)
 
-
+ # opt1 = OptionMenu(
+    #     my_w, 
+    #     variable, 
+    #     *students,
+    #     command=display_selected)
 
 
 
