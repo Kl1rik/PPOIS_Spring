@@ -1,7 +1,8 @@
 import sqlite3
-con = sqlite3.connect("test2.db")
+con = sqlite3.connect("PPOIS2lab.db")
 cur = con.cursor()
-table = """CREATE TABLE Students2(
+table = """CREATE TABLE Students4(
+    ID INTEGER NOT NULL PRIMARY KEY UNIQUE,
     FullName CHAR, 
     GroupNumber INT(5), 
     Sem1 INT,
@@ -13,39 +14,32 @@ table = """CREATE TABLE Students2(
     Sem7 INT,
     Sem8 INT,
     Sem9 INT,
-    Sem10 INT
+    Sem10 INT,
+    Sem_total INT GENERATED ALWAYS AS ( Sem1 + Sem2 + Sem3 + Sem4 + Sem5 + Sem6 + Sem7 + Sem8 + Sem9 + Sem10)
     );"""
-# cur.execute(table)
+
 def add_string_db(cons,curs):
-    counter =  50
-    sqlite_insert_query = """INSERT INTO Students2
-                            (FullName , GroupNumber, Sem1 ,Sem2 ,Sem3 ,Sem4 ,Sem5 ,Sem6 ,Sem7 ,Sem8 ,Sem9 ,Sem10 )
-                            VALUES 
-                            ('A',121701, 0 , 1 , 2 , 3 , 4 , 354 , 6 , 7 , 8 , 9)"""
-    count = curs.execute(sqlite_insert_query)
-    cons.commit()
-
-
+        sqlite_insert_query = """INSERT INTO Students4
+                                (FullName , GroupNumber, Sem1 ,Sem2 ,Sem3 ,Sem4 ,Sem5 ,Sem6 ,Sem7 ,Sem8 ,Sem9 ,Sem10 )
+                                VALUES 
+                                ('Denis',121702, 101 , 1010 , 21 , 3 , 45 , 5 , 6 , 7 , 55 , 9)"""
+        count = curs.execute(sqlite_insert_query)
+        cons.commit()
 
 def show_table(cons,curs):
     curs = cons.cursor()
-    curs.execute("SELECT * FROM Students2")
+    curs.execute("SELECT * FROM Students4")
     rows = curs.fetchall()
     for row in rows:
         print(row)
 
-
-print(show_table(con,cur))
 def find(cons,curs,id):
     curs = cons.cursor()
     if id == 1:
         print("Find by group")
         print("Enter Group number:")
         val1 = int(input())
-        sqlite_find_by_range_db = """SELECT * FROM Students2 
-                                     WHERE GroupName = 121701
-                                     
-                                     """
+        curs.execute("SELECT * FROM Students2 WHERE GroupNumber=?",(val1,))
     elif id == 2:
         print("Find by FullName")
         print("Enter FullName:")
@@ -54,19 +48,41 @@ def find(cons,curs,id):
     rows = curs.fetchall()
     for row in rows:
         print(row)
-#print(find(con,cur,2))
+
 def find_by_amount(cons,curs,id):
     curs = cons.cursor()
     if id == 1:
         print("Find by group")
         print("Enter Group number:")
-        #val1 = int(input())
-        curs.execute("SELECT * FROM Students2 Where Sem6 > 5")
+        val1 = int(input())
+        print("Enter Min amount:")
+        min_param = int(input())
+        print("Enter Max amount:")
+        max_param = int(input())
+        curs.execute("SELECT * FROM Students2 WHERE GroupNumber=?1 AND Sem_total BETWEEN ?2 AND ?3", (val1,min_param,max_param,))
     elif id == 2:
         print("Find by FullName")
         print("Enter FullName:")
         val2 = str(input())
-        curs.execute("SELECT * FROM Students2 WHERE FullName=?", (val2,))
+        print("Enter Min amount:")
+        min_param = int(input())
+        print("Enter Max amount:")
+        max_param = int(input())
+        curs.execute("SELECT * FROM Students2 WHERE FullName=?1 AND Sem_total BETWEEN ?2 AND ?3", (val2,min_param,max_param,))
+    rows = curs.fetchall()
+    for row in rows:
+        print(row) 
 
-#print(find_by_amount(con,cur,1))
-#print(add_string_db(con,cur))
+
+
+
+
+
+cur.execute(table) 
+add_string_db(con,cur)
+print(show_table(con,cur))          
+# print(find(con,cur,1))
+
+
+# print(find_by_amount(con,cur,2))
+# print(show_table(con,cur))
