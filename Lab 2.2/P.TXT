@@ -1,1 +1,13 @@
-<function Find.<locals>.display_selected at 0x000002D0321E4F70>
+
+ton
+
+a
+Slava
+Anna
+Anna
+Slava
+Slava
+Anton
+Slava
+Anna
+
