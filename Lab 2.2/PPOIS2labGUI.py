@@ -1,298 +1,115 @@
+
 import sqlite3
-import tkinter as tk
-from tkinter import *
-my_path = "C:\\Users\\kyrill\\Documents\\GitHub\\PPOIS_Spring\\Lab 2.2\\PPOIS2lab.db"
-con = sqlite3.connect(my_path)
-cursor = con.cursor()
-my_way = tk.Tk()
-val_1 = 20
-val_2 = 10
-f = open("C:\\Users\\kyrill\\Documents\\GitHub\\PPOIS_Spring\\Lab 2.2\\P.TXT","r+")
+from kivy.lang.builder import Builder
+from kivy.metrics import dp
+from kivymd.app import MDApp
+from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.uix.textinput import TextInput
+Builder.load_file('2lab.kv')
+my_path = "C:\\Users\\kiril\\OneDrive\\Документы\\GitHub\\PPOIS_Spring\\Lab 2.2\\PPOIS2lab.db"
+connection = sqlite3.connect(my_path)
+cursor = connection.cursor()
 
-# "C:\\Users\\kiril\\OneDrive\\Документы\\GitHub\\PPOIS_Spring\\Lab 2.2\\P.TXT","r+"
-def Display_Groups(my_w,cur,val):
-    my_w.title("Списки групп")
-    my_w.geometry("1200x720") 
-    r_set=cur.execute('SELECT * from Students4 WHERE GroupNumber = ?',(val,))
-    i=0 # row value inside the loop 
-    for student in r_set: 
-        for j in range(len(student)):
-            e = tk.Label(my_w, width=10, fg='blue',text=student[j],anchor='w') 
-            e.grid(row=i, column=j,padx=2) 
-        i=i+1
-    b1 = tk.Button(my_w,  text='121701', width=10, 
-               command=lambda: Display_Groups(my_way,cursor,121701))  
-    b1.grid(row=35,column=1)
-    
-    b2 = tk.Button(my_w,  text='121702', width=10, 
-               command=lambda: Display_Groups(my_way,cursor,121702))
-    b2.grid(row=35,column=3)  
-
-    b3 = tk.Button(my_w,  text='121703', width=10, 
-               command=lambda: Display_Groups(my_way,cursor,121703))  
-    b3.grid(row=35,column=5)     
-    my_w.mainloop()
-
-
-def Display_rows(my_w,cur,val1,val2):
-    my_w.title("Таблица с опт")
-    my_w.geometry("1200x250") 
-    
-    r_set=cur.execute('SELECT * from Students4 LIMIT ?,? ',(val1,val2,))
-
-    i=0 # row value inside the loop 
-    for student in r_set: 
-        for j in range(len(student)):
-            e = tk.Label(my_w, width=10, fg='blue',text=student[j],anchor='w') 
-            e.grid(row=i, column=j,padx=2) 
-        i=i+1
-    b1 = tk.Button(my_w,  text='1', width=10, 
-               command=lambda: Display_rows(my_way,cursor,0,10))  
-    b1.grid(row=15,column=1)
-    
-    b2 = tk.Button(my_w,  text='2', width=10, 
-               command=lambda: Display_rows(my_way,cursor,10,10))
-    b2.grid(row=15,column=3)  
-
-    b3 = tk.Button(my_w,  text='3', width=10, 
-               command=lambda : Display_rows(my_way,cursor,val_1,val_2))  
-    b3.grid(row=15,column=5)    
-
-    b4 = tk.Button(my_w,  text='4', width=10, 
-               command=lambda: Display_rows(my_way,cursor,30,10))  
-    b4.grid(row=15,column=7)
-    
-    b5 = tk.Button(my_w,  text='5', width=10, 
-               command=lambda: Display_rows(my_way,cursor,40,10))
-    b5.grid(row=15,column=9)  
-    
-    my_w.mainloop()
-    
-
-
-def Find(my_w,cur):
-    my_w.title("Поиск студента")
-    my_w.geometry("400x250") 
-    def display_selected(choice):
-        # choice = variable.get()
-        # # choice = t1.get("1.0",END)
-        # variable.set(choice)
-        f.write(choice + '\n')
-        choice = f.readlines()[-1]
-        print(choice)
+class TextInput(MDFloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    def create(self):
         
-        return choice  
-    l1 = tk.Label(my_w,  text='Name: ', width=10,anchor="c" )  
-    l1.grid(row=15,column=1) 
-
-    t1 = tk.Text(my_w,  height=1, width=10,bg='white') 
-    t1.grid(row=15,column=2) 
+        return self.screen
 
 
 
-    # l2 = tk.Label(my_w,  text='Name: ', width=10,anchor="c" )  
-    # l2.grid(row=15,column=1) 
-    # add one text box
-    # students = ['Anton','Anna', 'Slava','Ivan']
-    # variable = StringVar(my_w)
-    
-    
 
-    # # l2 = tk.Label(my_w,  text='Class: ', width=10 )  
-    # # l2.grid(row=4,column=1) 
-    # opt1 = OptionMenu(
-    #     my_w, 
-    #     variable, 
-    #     "Anna",
-    #     "Anton",
-    #     "Slava"
+
+
+
+class Example(MDApp):
+    def build(self):
+        title = "Student table"
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Orange"
+        data_tables = None
+        cursor.execute("SELECT * FROM Students4")
+        rows = cursor.fetchall()
+        layout = MDFloatLayout()
+        button_box = MDBoxLayout(
+            pos_hint={"center_x": 0.5},
+            adaptive_size=True,
+            padding="24dp",
+            spacing="24dp",
+        )
+        for button_text in ["121701", "121702","121703","All","Find Slava"]:
+            button_box.add_widget(
+                MDRaisedButton(
+                    text=button_text, on_release=self.on_button_press
+                )
+            )
+        TextInput(text='Hello world')
+        self.data_tables = MDDataTable(
+            pos_hint={"center_y": 0.5, "center_x": 0.5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("No.", dp(10)),
+                ("Column 1", dp(20)),
+                ("Column 2", dp(20)),
+                ("Column 3", dp(20)),
+                ("Column 4", dp(20)),
+                ("Column 5", dp(20)),
+                ("Column 6", dp(20)),
+                ("Column 7", dp(20)),
+                ("Column 8", dp(20)),
+                ("Column 9", dp(20)),
+                ("Column 10", dp(20)),
+                ("Column 11", dp(20)),
+                ("Column 12", dp(20)),
+                ("Column 13", dp(20)),
+            ],
+            row_data=[
+                row for row in rows
+            ],
+        )
         
-    #     )
-     
-    # opt1.grid(row=15,column=2)
-    ch = t1.get('1.0','end')
-    print(ch)
-    # 2ch  = display_selected(choice)
+        
+        layout.add_widget(self.data_tables)
+        layout.add_widget(button_box)
+        return layout
+    def on_button_press(self, instance_button: MDRaisedButton) -> None:
+        '''Called when a control button is clicked.'''
 
-    # variable.set(ch) 
+        try:
+            {
+                "121701": self.display_121701,
+                "121702": self.display_121702,
+                "121703":self.display_121703,
+                "All":self.display_all,
+                "Find":self.find
+            }[instance_button.text]()
+        except KeyError:
+            pass
 
-    # b1 = tk.Button(my_w,  text='Поиск', width=10, 
-    #            command=lambda : Display_find(my_way))  
-    # b1.grid(row=16,column=1)    
-    r_set = cur.execute("SELECT * FROM Students4 WHERE FullName=?",[t1.get('1.0',END)])
-    i=0 # row value inside the loop 
-    for student in r_set: 
-        for j in range(len(student)):
-            e = tk.Label(my_w, width=10, fg='blue',text=student[j],anchor='w') 
-            e.grid(row=i, column=j,padx=2) 
-        i=i+1
-    my_w.mainloop()
-
-def Display_find(my_w):
-    my_w.title("Найденные студенты")
-    my_w.geometry("1200x250") 
-
+    def display_121701(self) -> None:
+        cursor.execute("SELECT * FROM Students4 Where GroupNumber = 121701")
+        rows = cursor.fetchall()
+        self.data_tables.update_row_data(self.data_tables,rows)
+    def display_121702(self) -> None:
+        cursor.execute("SELECT * FROM Students4 Where GroupNumber = 121702")
+        rows = cursor.fetchall()
+        self.data_tables.update_row_data(self.data_tables,rows)    
+    def display_121703(self) -> None:    
+        cursor.execute("SELECT * FROM Students4 Where GroupNumber = 121703")
+        rows = cursor.fetchall()
+        self.data_tables.update_row_data(self.data_tables,rows)  
+    def display_all(self) -> None:    
+        cursor.execute("SELECT * FROM Students4 ")
+        rows = cursor.fetchall()
+        self.data_tables.update_row_data(self.data_tables,rows)     
+    def find(self) -> None:    
+        cursor.execute("SELECT * FROM Students4 Where FullName = 'Find Slava'")
+        rows = cursor.fetchall()
+        self.data_tables.update_row_data(self.data_tables,rows)        
     
-   
-    con.commit()
-    
-    
-    
-    my_w.mainloop()
-
-# def Display_rows(my_w,cur,val1,val2):
-#     my_w.title("Таблица с опт")
-#     my_w.geometry("1000x250") 
-#     r_set=cur.execute('SELECT * from Students4 LIMIT ?,?',(val1,val2,))
-#     i=0 # row value inside the loop 
-#     for student in r_set: 
-#         for j in range(len(student)):
-#             e = tk.Label(my_w, width=10, fg='blue',text=student[j],anchor='w') 
-#             e.grid(row=i, column=j,padx=2) 
-#         i=i+1
-#     b1 = tk.Button(my_w,  text='1', width=10, 
-#                command=lambda: Display_rows(my_way,cursor,10,20))  
-#     b1.grid(row=11,column=1)
-    
-    
-#     my_w.mainloop()
-
-
-# Display_rows(my_way,cursor,val_1,val_2)
-# Display_button(my_way)
-Find(my_way,cursor)
-# Display_Groups(my_way,cursor,121702)
-# Display_find(my_way,cursor,"Anton")
- # opt1 = OptionMenu(
-    #     my_w, 
-    #     variable, 
-    #     *students,
-    #     command=display_selected)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# table = """CREATE TABLE Students2(
-#     FullName CHAR, 
-#     GroupNumber INT(5), 
-#     Sem1 INT,
-#     Sem2 INT,
-#     Sem3 INT,
-#     Sem4 INT,
-#     Sem5 INT,
-#     Sem6 INT,
-#     Sem7 INT,
-#     Sem8 INT,
-#     Sem9 INT,
-#     Sem10 INT
-#     );"""
-# cur.execute(table)
-# def add_string_db(cons,curs):
-#     counter =  50
-#     sqlite_insert_query = """INSERT INTO Students2
-#                             (FullName , GroupNumber, Sem1 ,Sem2 ,Sem3 ,Sem4 ,Sem5 ,Sem6 ,Sem7 ,Sem8 ,Sem9 ,Sem10 )
-#                             VALUES 
-#                             ('A',121701, 0 , 1 , 2 , 3 , 4 , 354 , 6 , 7 , 8 , 9)"""
-#     count = curs.execute(sqlite_insert_query)
-#     cons.commit()
-
-
-
-# def show_table(cons,curs):
-#     curs = cons.cursor()
-#     curs.execute("SELECT * FROM Students2")
-#     rows = curs.fetchall()
-#     for row in rows:
-#         print(row)
-
-
-# print(show_table(con,cur))
-# def find(cons,curs,id):
-#     curs = cons.cursor()
-#     if id == 1:
-#         print("Find by group")
-#         print("Enter Group number:")
-#         val1 = int(input())
-#         sqlite_find_by_range_db = """SELECT * FROM Students2 
-#                                      WHERE GroupName = 121701
-                                     
-#                                      """
-#     elif id == 2:
-#         print("Find by FullName")
-#         print("Enter FullName:")
-#         val2 = str(input())
-#         curs.execute("SELECT * FROM Students2 WHERE FullName=?",(val2,))
-#     rows = curs.fetchall()
-#     for row in rows:
-#         print(row)
-# #print(find(con,cur,2))
-# def find_by_amount(cons,curs,id):
-#     curs = cons.cursor()
-#     if id == 1:
-#         print("Find by group")
-#         print("Enter Group number:")
-#         #val1 = int(input())
-#         curs.execute("SELECT * FROM Students2 Where Sem6 > 5")
-#     elif id == 2:
-#         print("Find by FullName")
-#         print("Enter FullName:")
-#         val2 = str(input())
-#         curs.execute("SELECT * FROM Students2 WHERE FullName=?", (val2,))
-
-#print(find_by_amount(con,cur,1))
-#print(add_string_db(con,cur))
+Example().run()
