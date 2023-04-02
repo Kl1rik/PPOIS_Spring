@@ -22,9 +22,7 @@ scoreboard_height = 25
 
 
     # coordinates of the point where the user clicked on
-click_x = None
-click_y = None
-seconds_format = 0
+
 # game variables
 
 
@@ -82,29 +80,7 @@ for row_num in range(height // candy_height):
         candy = Candy(row_num, col_num)
         board[row_num].append(candy)
 
-def draw():
-    
-    # draw the background
-    pygame.draw.rect(screen, (173, 216, 230), (0, 0, width, height + scoreboard_height))
-    
-    # draw the candies
-    for row in board:
-        for candy in row:
-            candy.draw()
-    
-    # display the score and moves
-    font = pygame.font.SysFont('monoface', 18)
-    score_text = font.render(f'Score: {score}', 1, (0, 0, 0))
-    score_text_rect = score_text.get_rect(center=(width / 4, height + scoreboard_height / 2))
-    screen.blit(score_text, score_text_rect)
-    
-    timer_text = font.render(f'Timer: {seconds_format}', 1, (0, 0, 0))
-    timer_text_rect = timer_text.get_rect(center=(width * 2 / 4, height + scoreboard_height / 2))
-    screen.blit(timer_text, timer_text_rect)
 
-    moves_text = font.render(f'Moves: {moves}', 1, (0, 0, 0))
-    moves_text_rect = moves_text.get_rect(center=(width * 3 / 4, height + scoreboard_height / 2))
-    screen.blit(moves_text, moves_text_rect)
 
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -113,7 +89,7 @@ def draw_text(text, font, color, surface, x, y):
     surface.blit(textobj, textrect)
  
 # A variable to check for the status later
-click = False
+
 
 def swap(candy1, candy2):
     
@@ -174,9 +150,10 @@ def match_three(candy):
         return matches
     else:
         return set()
-score = 0
-moves = 0
-time_limit = 10000    
+    
+
+
+    
 # Main container function that holds the buttons and game functions
 def main_menu():
     while True:
@@ -224,6 +201,8 @@ def main_menu():
 """
 This function is called when the "PLAY" button is clicked.
 """
+ 
+    
 def game():
     
     screen.fill((139, 0, 139))
@@ -232,7 +211,32 @@ def game():
     time_limit = 10000
     swapped_candy = None
     clicked_candy = None
+    click_x = None
+    click_y = None
     running = True
+    def draw():
+    
+    # draw the background
+        pygame.draw.rect(screen, (173, 216, 230), (0, 0, width, height + scoreboard_height))
+        
+        # draw the candies
+        for row in board:
+            for candy in row:
+                candy.draw()
+        
+        # display the score and moves
+        font = pygame.font.SysFont('monoface', 18)
+        score_text = font.render(f'Score: {score}', 1, (0, 0, 0))
+        score_text_rect = score_text.get_rect(center=(width / 4, height + scoreboard_height / 2))
+        screen.blit(score_text, score_text_rect)
+        
+        timer_text = font.render(f'Timer: {seconds_format}', 1, (0, 0, 0))
+        timer_text_rect = timer_text.get_rect(center=(width * 2 / 4, height + scoreboard_height / 2))
+        screen.blit(timer_text, timer_text_rect)
+
+        moves_text = font.render(f'Moves: {moves}', 1, (0, 0, 0))
+        moves_text_rect = moves_text.get_rect(center=(width * 3 / 4, height + scoreboard_height / 2))
+        screen.blit(moves_text, moves_text_rect)   
     while running:
         seconds=(pygame.time.get_ticks()-start_ticks)/1000
         seconds_format = math.trunc(seconds)  #calculate how many seconds
@@ -414,7 +418,7 @@ def game():
                             
                 draw()
        
-        pygame.display.update()
+                pygame.display.update()
         
 
 """
