@@ -203,6 +203,7 @@ class FifthWindow(MDScreen):
         val11 = self.ids.sem9.text 
         val12 = self.ids.sem10.text 
         cursor.execute("INSERT INTO Students4 (FullName , GroupNumber, Sem1 ,Sem2 ,Sem3 ,Sem4 ,Sem5 ,Sem6 ,Sem7 ,Sem8 ,Sem9 ,Sem10 ) VALUES (?,?,?,?,? ,? ,? , ? , ? , ? , ? , ?)",(val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12))
+        connection.commit()
 # Удаление по имени и группе (Добавить 2 поиск )
 class SixthWindow(MDScreen):
     def __init__(self, **kwargs):
@@ -212,11 +213,13 @@ class SixthWindow(MDScreen):
         val2 = self.ids.max.text 
         val3 = self.ids.min.text
         cursor.execute("DELETE FROM Students4 WHERE FullName=?1 AND Sem_total BETWEEN ?3 and ?2",(val1,val2,val3))
+        connection.commit()
     def delete_by_group(self) :       
         val1 = self.ids.group.text 
         val2 = self.ids.max.text 
         val3 = self.ids.min.text
         cursor.execute("DELETE FROM Students4 WHERE GroupNumber=?1 AND Sem_total BETWEEN ?3 and ?2",(val1,val2,val3))
+        connection.commit()
 
 
 class Example(MDApp):
