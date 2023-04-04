@@ -169,6 +169,8 @@ def main_menu():
         button_3 = pygame.Rect(150, 260, 100, 50)
         button_4 = pygame.Rect(150, 340, 100, 50)
         button_5 = pygame.Rect(10, 100, 100, 50)
+        button_6 = pygame.Rect(10, 180, 100, 50)
+        button_7 = pygame.Rect(10, 260, 100, 50)
         #defining functions when a certain button is pressed
         if button_1.collidepoint((mx, my)):
             if click:
@@ -182,18 +184,30 @@ def main_menu():
         if button_4.collidepoint((mx, my)):
             if click:
                 level_3()
-
+        if button_5.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+        if button_6.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+        if button_6.collidepoint((mx, my)):
+            if click:
+                pygame.quit()        
         pygame.draw.rect(screen, (139, 0, 139), button_1)
         pygame.draw.rect(screen, (106, 90, 205), button_2)
         pygame.draw.rect(screen, (75, 0, 130), button_3)
         pygame.draw.rect(screen, (72, 61, 139), button_4)
         pygame.draw.rect(screen, (148,0,211), button_5)
+        pygame.draw.rect(screen, (153,0,76), button_6)
+        pygame.draw.rect(screen, (235,60,95), button_7)
         #writing text on top of button
         draw_text('Time ', font, (255,255,255), screen, 170, 115)
         draw_text(' Score 1', font, (255,255,255), screen, 155, 195)
         draw_text(' Score 2', font, (255,255,255), screen, 155, 275)
         draw_text(' Score 3', font, (255,255,255), screen, 155, 355)
         draw_text(' Highscore', font, (255,255,255), screen, 5, 115)
+        draw_text('  Close', font, (255,255,255), screen, 5, 195)
+        draw_text('  Close', font, (255,255,255), screen, 5, 275)
 
 
 
