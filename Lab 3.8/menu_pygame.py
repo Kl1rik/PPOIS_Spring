@@ -892,8 +892,7 @@ def level_3():
     click_x = None
     click_y = None
     running = True
-    width = 200
-    height = 200
+   
     def draw():
     
     # draw the background
