@@ -7,17 +7,15 @@ import datetime
 import sqlite3
 import math
 import sys
-from ScoreTable import find_max,insert
-import ScoreTable
-
-rows = ScoreTable.formalize_rows
-find_max = ScoreTable.find_max
-insert = ScoreTable.insert
-import GemLogic
+sys.path.append("C:\\Users\\kyrill\\Documents\\GitHub\\PPOIS_Spring\\Lab 3.8")
+from GemLogic import draw_text
 from GemLogic import Candy
-draw_text = GemLogic.draw_text
-swap = GemLogic.swap
-match_three = GemLogic.match_three
+from GemLogic import swap
+from GemLogic import match_three
+from ScoreTable import formalize_rows as rows
+from ScoreTable import find_max
+from ScoreTable import insert
+
 
 pygame.init()
 pygame.display.set_caption('Jewel quest')

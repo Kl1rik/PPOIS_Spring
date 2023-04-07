@@ -1,4 +1,6 @@
 import sqlite3
+import sys
+sys.path.append("C:\\Users\\kyrill\\Documents\\GitHub\\PPOIS_Spring\\Lab 3.8")
 my_way = "C:\\Users\\kyrill\\Documents\\GitHub\\PPOIS_Spring\\Lab 3.8\\HighscoreTable.db"
 connection = sqlite3.connect(my_way)
 cursor = connection.cursor()

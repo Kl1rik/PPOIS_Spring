@@ -1,5 +1,7 @@
 import pygame
 import sys
+sys.path.append("C:\\Users\\kyrill\\Documents\\GitHub\\PPOIS_Spring\\Lab 3.8")
+
 from pygame.locals import *
 import random
 import time
@@ -11,7 +13,7 @@ import sys
 from ScoreTable import formalize_rows as rows
 from ScoreTable import find_max,insert
 
-import Menu3
+from Menu3 import Menu
 
 
 pygame.init()

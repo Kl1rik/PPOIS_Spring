@@ -7,12 +7,8 @@ import datetime
 import sqlite3
 import math
 import sys
-
+from ScoreTable import formalize_rows as rows
 from ScoreTable import find_max,insert
-import ScoreTable
-rows = ScoreTable.formalize_rows
-find_max = ScoreTable.find_max
-insert = ScoreTable.insert
 pygame.init()
 pygame.display.set_caption('Jewel quest')
 screen = pygame.display.set_mode((400, 425),0,32)
