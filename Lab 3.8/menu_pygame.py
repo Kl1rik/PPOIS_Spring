@@ -6,7 +6,13 @@ import time
 import datetime
 import sqlite3
 import math
+import sys
 
+from ScoreTable import find_max,insert
+import ScoreTable
+rows = ScoreTable.formalize_rows
+find_max = ScoreTable.find_max
+insert = ScoreTable.insert
 pygame.init()
 pygame.display.set_caption('Jewel quest')
 screen = pygame.display.set_mode((400, 425),0,32)
@@ -16,19 +22,7 @@ height = 400
 scoreboard_height = 25
 
 
-
-
-# the adjacent candy that will be swapped with the clicked candy
-
-
-    # coordinates of the point where the user clicked on
-
-# game variables
-
-
-start_ticks=pygame.time.get_ticks() #starter tick
-
-# game loop
+start_ticks=pygame.time.get_ticks() 
 
 clock = pygame.time.Clock()
 
@@ -37,9 +31,7 @@ candy_colors = ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'teal', 'yel
 candy_width = 40
 candy_height = 40
 candy_size = (candy_width, candy_height)
-"""
-A function that can be used to write text on our screen and buttons
-"""
+
 class Candy:
     
     def __init__(self, row_num, col_num):
@@ -79,7 +71,7 @@ for row_num in range(height // candy_height):
         # create the candy and add it to the board
         candy = Candy(row_num, col_num)
         board[row_num].append(candy)
-
+        
 
 
 def draw_text(text, font, color, surface, x, y):
@@ -88,7 +80,7 @@ def draw_text(text, font, color, surface, x, y):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
  
-# A variable to check for the status later
+
 
 
 def swap(candy1, candy2):
@@ -110,7 +102,7 @@ def swap(candy1, candy2):
     candy1.snap()
     candy2.snap()
     
-# find neighboring candies that match the candy's color
+
 def find_matches(candy, matches):
     
     # add the candy to the set
@@ -142,7 +134,7 @@ def find_matches(candy, matches):
             
     return matches
     
-# return a set of at least 3 matching candies or an empty set
+
 def match_three(candy):
     
     matches = find_matches(candy, set())
@@ -152,9 +144,6 @@ def match_three(candy):
         return set()
     
 
-
-    
-# Main container function that holds the buttons and game functions
 def main_menu():
     while True:
  
@@ -186,11 +175,11 @@ def main_menu():
                 level_3()
         if button_5.collidepoint((mx, my)):
             if click:
-                pygame.quit()
+                score()
         if button_6.collidepoint((mx, my)):
             if click:
-                pygame.quit()
-        if button_6.collidepoint((mx, my)):
+                help()
+        if button_7.collidepoint((mx, my)):
             if click:
                 pygame.quit()        
         pygame.draw.rect(screen, (139, 0, 139), button_1)
@@ -206,8 +195,8 @@ def main_menu():
         draw_text(' Score 2', font, (255,255,255), screen, 155, 275)
         draw_text(' Score 3', font, (255,255,255), screen, 155, 355)
         draw_text(' Highscore', font, (255,255,255), screen, 5, 115)
-        draw_text('  Close', font, (255,255,255), screen, 5, 195)
-        draw_text('  Close', font, (255,255,255), screen, 5, 275)
+        draw_text('     Help', font, (255,255,255), screen, 5, 195)
+        draw_text('    Close', font, (255,255,255), screen, 5, 275)
 
 
 
@@ -228,7 +217,7 @@ def main_menu():
         
  
 """
-This function is called when the "PLAY" button is clicked.
+This function is called when the "Time" button is clicked.
 """
  
     
@@ -237,7 +226,7 @@ def game():
     screen.fill((139, 0, 139))
     score = 0
     moves = 0
-    time_limit = 10
+    time_limit = 60
     swapped_candy = None
     clicked_candy = None
     click_x = None
@@ -268,16 +257,21 @@ def game():
         screen.blit(moves_text, moves_text_rect)   
     while running:
         seconds=(pygame.time.get_ticks()-start_ticks)/1000
-        seconds_format = math.trunc(seconds)  #calculate how many seconds
-        if seconds>time_limit: # if more than 10 seconds close the game
+        seconds_format = math.trunc(seconds)  
+        if seconds>time_limit:
             running = False
-    
+            if score > find_max(): 
+                
+                win_screen(score)
+            # 
+            #         insert('Kain',score)
         # set of matching candies
         matches = set()
     
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
+                
                 
             # detect mouse click
             if clicked_candy is None and event.type == MOUSEBUTTONDOWN:
@@ -451,7 +445,7 @@ def game():
         
 
 """
-This function is called when the "OPTIONS" button is clicked.
+This functions is called when the "level *" button is clicked.
 """
 def level_1():
     screen.fill((106, 90, 205))
@@ -497,6 +491,7 @@ def level_1():
         seconds_format = math.trunc(seconds)  #calculate how many seconds
         if score > score_limit:
             running = False
+            complete_level_screen()
     
         # set of matching candies
         matches = set()
@@ -718,7 +713,7 @@ def level_2():
         seconds_format = math.trunc(seconds)  #calculate how many seconds
         if score > score_limit:
             running = False
-    
+            complete_level_screen()
         # set of matching candies
         matches = set()
     
@@ -941,7 +936,7 @@ def level_3():
         seconds_format = math.trunc(seconds)  #calculate how many seconds
         if score > score_limit:
             running = False
-    
+            complete_level_screen()
         # set of matching candies
         matches = set()
     
@@ -1119,4 +1114,83 @@ def level_3():
        
                 pygame.display.update()       
 
+def score():
+    running = True
+    while running:
+        screen.fill((207, 140, 255))
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                running = False
+        draw_text('Score Table', font, (0,0,0), screen, 150, 40)
+        for i in range(len(rows)):
+            draw_text(rows[i], font, (255,255,255), screen, 155, 105 + 60 * i)
+        
+        pygame.display.update()
+def win_screen(score_level):
+    
+    font = pygame.font.Font(None, 32)
+    input_box = pygame.Rect(100, 200, 200, 32)
+    text = ''
+    text_surface = font.render(text, True, (255, 255, 255))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    text = text[:-1]
+                elif event.key == pygame.K_RETURN:
+                    print("User input:", text)
+                    insert(text,score_level)
+                    text = ''
+                    
+                else:
+                    text += event.unicode
+                text_surface = font.render(text, True, (255, 255, 255))
+
+        screen.fill((0, 128, 0))
+        pygame.draw.rect(screen, (32, 178, 170), input_box, 2)
+        screen.blit(text_surface, (input_box.x+5, input_box.y+5))
+        draw_text('  Congratulations', font, (0,0,0), screen, 100, 40)
+        draw_text(' This is new record', font, (0,0,0), screen, 100, 80)
+        draw_text(' Enter your Name ', font, (0,0,0), screen, 90, 120)
+        pygame.display.flip()
+
+def complete_level_screen():
+    font = pygame.font.Font(None, 32)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                
+
+        screen.fill((0, 255, 153))
+        
+        draw_text('Level complete', font, (0,0,0), screen, 90, 200)
+        
+        pygame.display.flip()
+
+def help():
+    running = True
+    while running:
+        screen.fill((255, 242, 145))
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                running = False
+        draw_text('Rules', font, (0,0,0), screen, 80, 40)
+        draw_text('Classic match-tree rules', font, (0,0,0), screen, 80, 80)
+        draw_text('Time: Play until time end', font, (0,0,0), screen, 80, 120)
+        draw_text('Score *: 3 level with limit score', font, (0,0,0), screen, 80, 160)
+        pygame.display.update()
+ 
+
+        
+        
+    
+    
+
+
 main_menu()
+
