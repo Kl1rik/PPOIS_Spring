@@ -41,14 +41,37 @@ card_obj = Card(pin,card)
 bank_obj = Bank(bank)
 tel_obj = Telephone(tel)
 
-print("Длина массива аргументов CLI",l)
-if l == 1:
-    print("Вызов подсказки . Используемые флаги :")
-    print("-pay_tel Оплата телефона")
-    print("-add_money Внести наличные")
-    print("-get_money Снять наличные")
-    print("-display_balance Просмотр остатков кард-счета и хранилища банкнот")
-elif l > 1:    
-    read_flag.flag_reader(l,card_obj)
+class WindowManager(MDScreenManager):
+    def __init__(self, *args, **kwargs):
+        super(WindowManager,self).__init__(*args, **kwargs)
 
+class MenuScreen(MDScreen):
+    pass
+class AddMoneyScreen(MDScreen):
+    pass
+class GetMoneyScreen(MDScreen):
+    pass
+class PayTelephoneScreen(MDScreen):
+    pass
+class DisplayScreen(MDScreen):
+    pass
+class ValidateScreen(MDScreen):
+    pass
+class AtmApp(MDApp):
+    def build(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Amber"
+        Builder.load_file('Gui4lab.kv')
+        screen_manager = WindowManager()
+        screen_manager.add_widget(MenuScreen(name = "menu"))
+        screen_manager.add_widget(AddMoneyScreen(name = "add"))
+        screen_manager.add_widget(GetMoneyScreen(name = "get"))
+        screen_manager.add_widget(DisplayScreen(name = "display"))
+        screen_manager.add_widget(PayTelephoneScreen(name = "pay"))
+        screen_manager.add_widget(ValidateScreen(name = "validate"))
+
+
+        return screen_manager
+    
+AtmApp.run()
 f.close()

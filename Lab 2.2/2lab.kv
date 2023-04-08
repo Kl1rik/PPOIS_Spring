@@ -1,0 +1,17 @@
+#:kivy 1.10.0
+BoxLayout:
+    padding: "10dp"
+
+    MDTextField:
+        id: text_field_error
+        hint_text: "Helper text on error (press 'Enter')"
+        helper_text: "There will always be a mistake"
+        helper_text_mode: "on_error"
+        pos_hint: {"center_y": .5}
+    MDTextField:
+        hint_text: "Max text length = 5"
+        max_text_length: 5
+
+
+
+        
