@@ -9,8 +9,10 @@ import math
 import sys
 from ScoreTable import formalize_rows as rows
 from ScoreTable import find_max,insert
+from HelpScreen import help
+from HelpScreen import complete_level_screen
 pygame.init()
-pygame.display.set_caption('Jewel quest')
+pygame.display.set_caption('Jewel quest') 
 screen = pygame.display.set_mode((400, 425),0,32)
 
 width = 400
@@ -139,7 +141,17 @@ def match_three(candy):
     else:
         return set()
     
+# get the candy that was clicked on
 
+    
+               
+# calculate the distance between the point the user clicked on
+    # and the current location of the mouse cursor
+  
+    
+    
+            
+            # detect mouse release                
 def main_menu():
     while True:
  
@@ -261,15 +273,12 @@ def game():
                 win_screen(score)
             else:
                 complete_level_screen()
-            # 
-            #         insert('Kain',score)
+           
         # set of matching candies
         matches = set()
-    
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
-                
                 
             # detect mouse click
             if clicked_candy is None and event.type == MOUSEBUTTONDOWN:
@@ -403,7 +412,7 @@ def game():
                 if swapped_candy is not None:
                     swapped_candy.snap()
                     swapped_candy = None
-                
+    
         draw()
         pygame.display.update()
         
@@ -441,7 +450,6 @@ def game():
        
                 pygame.display.update()
         
-
 """
 This functions is called when the "level *" button is clicked.
 """
@@ -704,8 +712,7 @@ def level_2():
         level_text = font.render(f'Level 2 ', 1, (0, 0, 0))
         level_text_rect = level_text.get_rect(center=(width * 4 / 5, height + scoreboard_height / 2))
         screen.blit(level_text, level_text_rect)
-
-        
+ 
     while running:
         seconds=(pygame.time.get_ticks()-start_ticks)/1000
         seconds_format = math.trunc(seconds)  #calculate how many seconds
@@ -1156,39 +1163,7 @@ def win_screen(score_level):
         draw_text(' Enter your Name ', font, (0,0,0), screen, 90, 120)
         pygame.display.flip()
 
-def complete_level_screen():
-    font = pygame.font.Font(None, 32)
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                
 
-        screen.fill((0, 255, 153))
-        
-        draw_text('Level complete', font, (0,0,0), screen, 90, 200)
-        
-        pygame.display.flip()
-
-def help():
-    running = True
-    while running:
-        screen.fill((255, 242, 145))
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                running = False
-        draw_text('Rules', font, (0,0,0), screen, 80, 40)
-        draw_text('Classic match-tree rules', font, (0,0,0), screen, 80, 80)
-        draw_text('Time: Play until time end', font, (0,0,0), screen, 80, 120)
-        draw_text('Score *: 3 level with limit score', font, (0,0,0), screen, 80, 160)
-        pygame.display.update()
  
-
-        
-        
-    
-    
-
-
 main_menu()
 
