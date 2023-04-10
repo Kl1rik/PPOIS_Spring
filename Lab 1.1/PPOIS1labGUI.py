@@ -19,9 +19,9 @@ from kivymd.uix.menu.menu import MDDropdownMenu
 from kivy.clock import Clock
 from typing import Optional
 from kivymd.uix.screenmanager import MDScreenManager
-from PPOIS1lab import Rewrite_values,Get_money,Add_money,Pay_telephone,Read_values,Display_values,Flag_Reader
+from PPOIS1lab import Rewrite_values,Get_money,Add_money,Pay_telephone,Read_values,Display_values,Flag_Reader,arr
 from PPOIS1labClasses import Atm,Card,Bank,Telephone
-f = open("C:\\Users\\kyrill\\Downloads\\Telegram Desktop\\PPOIS1lab.txt","r+")
+f = open("C:\\Users\\kyrill\\Documents\\GitHub\\PPOIS_Spring\\Lab 1.1\\PPOIS1lab.txt","r+")
 l = len(sys.argv)
 read_flag = Flag_Reader()
 display = Display_values()
@@ -30,7 +30,7 @@ add = Add_money()
 pay = Pay_telephone()
 rewrite = Rewrite_values()
 read = Read_values()
-arr =read.read_values()
+
 atm = arr[0]
 bank = arr[1]
 pin = arr[2]
@@ -45,8 +45,11 @@ class WindowManager(MDScreenManager):
     def __init__(self, *args, **kwargs):
         super(WindowManager,self).__init__(*args, **kwargs)
 
+                
 class MenuScreen(MDScreen):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(MenuScreen,self).__init__(*args, **kwargs)
+        
 class AddMoneyScreen(MDScreen):
     pass
 class GetMoneyScreen(MDScreen):
@@ -54,24 +57,51 @@ class GetMoneyScreen(MDScreen):
 class PayTelephoneScreen(MDScreen):
     pass
 class DisplayScreen(MDScreen):
-    pass
-class ValidateScreen(MDScreen):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(DisplayScreen,self).__init__(*args, **kwargs)
+        title = "Остатки на всех счетах"
+        data_tables = None
+        self.data_tables = MDDataTable(
+            pos_hint={"center_y": 0.5, "center_x": 0.5},
+            size_hint=(0.9, 0.6),
+            use_pagination=True,
+            column_data=[
+                ("Atm", dp(30)),
+                ("Bank", dp(30)),
+                ("Pin", dp(30)),
+                ("Card", dp(30)),
+                ("Tel", dp(30)),
+            ],
+            row_data=[
+                
+                (atm,
+                 bank,
+                 pin,
+                 card,
+                 tel,
+                 ),
+            ],
+        )
+        
+        self.add_widget(self.data_tables)
+    def update(self):
+        arr = f.readlines()        
 class AtmApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Amber"
         Builder.load_file('Gui4lab.kv')
         screen_manager = WindowManager()
+        
+        
         screen_manager.add_widget(MenuScreen(name = "menu"))
         screen_manager.add_widget(AddMoneyScreen(name = "add"))
         screen_manager.add_widget(GetMoneyScreen(name = "get"))
         screen_manager.add_widget(DisplayScreen(name = "display"))
         screen_manager.add_widget(PayTelephoneScreen(name = "pay"))
-        screen_manager.add_widget(ValidateScreen(name = "validate"))
+        
 
 
         return screen_manager
     
-AtmApp.run()
-f.close()
+AtmApp().run()

@@ -169,6 +169,5 @@ if l == 1:
 elif l > 1:    
     read_flag.flag_reader(l,card_obj)
 
-f.close()
 
 
