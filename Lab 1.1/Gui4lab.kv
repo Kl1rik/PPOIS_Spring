@@ -39,6 +39,10 @@ WindowManager:
             text: "ATM 4188 Беларусбанк"
             halign: "center"
             font_size: 32
+        MDRaisedButton:
+            text:"Cli mode"
+            pos_hint: {'center_x': .5, 'center_y': .07}
+            size_hint: .92,.05
     MDGridLayout:
         size_hint: 1.,.8
         rows: 3
@@ -193,9 +197,9 @@ WindowManager:
     
 <PayTelephoneScreen>:
     MDBoxLayout:    
-        # orientation: 'vertical'
-        # padding: 40
-        # spacing: 5
+        orientation: 'vertical'
+        padding: 180
+        spacing: 20
         # MDGridLayout:
         #     size_hint: 1.,.8
         #     rows: 7
@@ -208,17 +212,17 @@ WindowManager:
            
                 
         MDTextField:
-            id: name
             hint_text: "Введите номер телефона"
             max_text_length: 12
-            pos_hint: {'center_x': .5, 'center_y': .45}
+            # pos_hint: {'center_x': .5, 'center_y': .45}
             multiline: False
             
         MDTextField:
-            id : group
+            id : tel
             hint_text: "Введите сумму для пополнения"
-            pos_hint: {'center_x': .5, 'center_y': .65}
-            max_text_lenght: 6
+            # pos_hint: {'center_x': .5, 'center_y': .65}
+            max_text_length: 6
+            multiline:False
     #             max_text_length: 6
     #             multiline: False   
     #         MDTextField:
