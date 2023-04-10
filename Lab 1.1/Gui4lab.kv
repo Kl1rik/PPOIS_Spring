@@ -192,32 +192,33 @@ WindowManager:
             on_release: root.manager.current = 'menu'    
     
 <PayTelephoneScreen>:
-    # MDBoxLayout:    
-    #     orientation: 'vertical'
-    #     padding: 40
-    #     spacing: 5
-    #     MDGridLayout:
-    #         size_hint: 1.,.8
-    #         rows: 7
-    #         cols: 2
-    #         padding: 50
-    #         spacing: 20
-    #         adaptive_height: True
+    MDBoxLayout:    
+        # orientation: 'vertical'
+        # padding: 40
+        # spacing: 5
+        # MDGridLayout:
+        #     size_hint: 1.,.8
+        #     rows: 7
+        #     cols: 2
+        #     padding: 50
+        #     spacing: 20
+        #     adaptive_height: True
             
 
            
                 
-    #         MDTextField:
-    #             id: name
-    #             hint_text: "Имя студента"
-    #             max_text_length: 6
-                
-    #             multiline: False
-                
-    #         MDTextField:
-    #             id : group
-    #             hint_text: "Группа"
+        MDTextField:
+            id: name
+            hint_text: "Введите номер телефона"
+            max_text_length: 12
+            pos_hint: {'center_x': .5, 'center_y': .45}
+            multiline: False
             
+        MDTextField:
+            id : group
+            hint_text: "Введите сумму для пополнения"
+            pos_hint: {'center_x': .5, 'center_y': .65}
+            max_text_lenght: 6
     #             max_text_length: 6
     #             multiline: False   
     #         MDTextField:
