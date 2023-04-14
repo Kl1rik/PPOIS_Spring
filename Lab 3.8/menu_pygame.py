@@ -7,16 +7,19 @@ import datetime
 import sqlite3
 import math
 import sys
+import os
 from ScoreTable import formalize_rows as rows
 from ScoreTable import find_max,insert
 pygame.init()
+pygame.mixer.init()
 pygame.display.set_caption('Jewel quest')
 screen = pygame.display.set_mode((400, 425),0,32)
-
+s = 'sound'
 width = 400
 height = 400
 scoreboard_height = 25
-
+complete_level = pygame.mixer.Sound(os.path.join(s,'complete_level.wav'))
+gem_match = pygame.mixer.Sound(os.path.join(s,'gem_match.wav'))
 
 start_ticks=pygame.time.get_ticks() 
 
@@ -257,9 +260,10 @@ def game():
         if seconds>time_limit:
             running = False
             if score > find_max(): 
-                
+                pygame.mixer.Sound.play(complete_level)
                 win_screen(score)
             else:
+                pygame.mixer.Sound.play(complete_level)
                 complete_level_screen()
             # 
             #         insert('Kain',score)
@@ -436,7 +440,7 @@ def game():
                             
                             # generate a new candy
                             board[row_num][col_num] = Candy(row_num, col_num)
-                            
+                # pygame.mixer.Sound.play(gem_match)            
                 draw()
        
                 pygame.display.update()
@@ -489,6 +493,7 @@ def level_1():
         seconds_format = math.trunc(seconds)  #calculate how many seconds
         if score > score_limit:
             running = False
+            pygame.mixer.Sound.play(complete_level)
             complete_level_screen()
     
         # set of matching candies
@@ -663,7 +668,7 @@ def level_1():
                             
                             # generate a new candy
                             board[row_num][col_num] = Candy(row_num, col_num)
-                            
+                pygame.mixer.Sound.play(gem_match)                        
                 draw()
        
                 pygame.display.update()
@@ -711,6 +716,7 @@ def level_2():
         seconds_format = math.trunc(seconds)  #calculate how many seconds
         if score > score_limit:
             running = False
+            pygame.mixer.Sound.play(complete_level)
             complete_level_screen()
         # set of matching candies
         matches = set()
@@ -884,7 +890,7 @@ def level_2():
                             
                             # generate a new candy
                             board[row_num][col_num] = Candy(row_num, col_num)
-                            
+                pygame.mixer.Sound.play(gem_match)                        
                 draw()
        
                 pygame.display.update()        
@@ -934,6 +940,7 @@ def level_3():
         seconds_format = math.trunc(seconds)  #calculate how many seconds
         if score > score_limit:
             running = False
+            pygame.mixer.Sound.play(complete_level)
             complete_level_screen()
         # set of matching candies
         matches = set()
@@ -1107,7 +1114,7 @@ def level_3():
                             
                             # generate a new candy
                             board[row_num][col_num] = Candy(row_num, col_num)
-                            
+                pygame.mixer.Sound.play(gem_match)                        
                 draw()
        
                 pygame.display.update()       

@@ -31,10 +31,15 @@ pay = Pay_telephone()
 rewrite = Rewrite_values()
 read = Read_values()
 
+global atm 
 atm = arr[0]
+global bank
 bank = arr[1]
+global pin 
 pin = arr[2]
+global card 
 card = arr[3]
+global tel 
 tel = arr[4]
 atm_obj = Atm(atm)
 card_obj = Card(pin,card)
@@ -55,7 +60,16 @@ class AddMoneyScreen(MDScreen):
 class GetMoneyScreen(MDScreen):
     pass
 class PayTelephoneScreen(MDScreen):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(PayTelephoneScreen,self).__init__(*args, **kwargs)
+    def pay_tel(self):    
+        money = self.ids.tel.text
+        if money <= atm and money <= bank:
+                bank = bank - money
+                atm = atm - money
+                tel = tel + money
+        else:
+            print("Ошибка.Недостаточно средств на карте/терминале")
 class DisplayScreen(MDScreen):
     def __init__(self, *args, **kwargs):
         super(DisplayScreen,self).__init__(*args, **kwargs)
