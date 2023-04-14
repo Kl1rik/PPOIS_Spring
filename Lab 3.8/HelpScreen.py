@@ -37,17 +37,15 @@ def draw_text(text, font, color, surface, x, y):
     
 def complete_level_screen():
     font = pygame.font.Font(None, 32)
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                
-
+    running = True
+    while running:
         screen.fill((0, 255, 153))
-        
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                running = False
         draw_text('Level complete', font, (0,0,0), screen, 90, 200)
         
-        pygame.display.flip()
+        pygame.display.update()
 
 def help():
     running = True
