@@ -26,27 +26,27 @@ start_ticks=pygame.time.get_ticks()
 clock = pygame.time.Clock()
 
 font = pygame.font.SysFont(None, 30)
-candy_colors = ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'teal', 'yellow'] 
-candy_width = 40
-candy_height = 40
-candy_size = (candy_width, candy_height)
+gem_colors = ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'teal', 'yellow'] 
+gem_width = 40
+gem_height = 40
+gem_size = (gem_width, gem_height)
 
-class Candy:
+class Gem:
     
     def __init__(self, row_num, col_num):
         
-        # set the candy's position on the board
+        # set the gem's position on the board
         self.row_num = row_num
         self.col_num = col_num
         
         # assign a random image
-        self.color = random.choice(candy_colors)
+        self.color = random.choice(gem_colors)
         image_name = f'swirl_{self.color}.png'
         self.image = pygame.image.load(image_name)
-        self.image = pygame.transform.smoothscale(self.image, candy_size)
+        self.image = pygame.transform.smoothscale(self.image, gem_size)
         self.rect = self.image.get_rect()
-        self.rect.left = col_num * candy_width
-        self.rect.top = row_num * candy_height
+        self.rect.left = col_num * gem_width
+        self.rect.top = row_num * gem_height
     def draw(self):
         screen.blit(self.image, self.rect)
 
@@ -55,21 +55,21 @@ class Candy:
         self.snap_col()
         
     def snap_row(self):
-        self.rect.top = self.row_num * candy_height
+        self.rect.top = self.row_num * gem_height
         
     def snap_col(self):
-        self.rect.left = self.col_num * candy_width
+        self.rect.left = self.col_num * gem_width
 board = []
-for row_num in range(height // candy_height):
+for row_num in range(height // gem_height):
     
     # add a new row to the board
     board.append([])
     
-    for col_num in range(width // candy_width):
+    for col_num in range(width // gem_width):
         
-        # create the candy and add it to the board
-        candy = Candy(row_num, col_num)
-        board[row_num].append(candy)
+        # create the gem and add it to the board
+        gem = Gem(row_num, col_num)
+        board[row_num].append(gem)
         
 
 
@@ -82,61 +82,61 @@ def draw_text(text, font, color, surface, x, y):
 
 
 
-def swap(candy1, candy2):
+def swap(gem1, gem2):
     
-    temp_row = candy1.row_num
-    temp_col = candy1.col_num
+    temp_row = gem1.row_num
+    temp_col = gem1.col_num
     
-    candy1.row_num = candy2.row_num
-    candy1.col_num = candy2.col_num
+    gem1.row_num = gem2.row_num
+    gem1.col_num = gem2.col_num
     
-    candy2.row_num = temp_row
-    candy2.col_num = temp_col
+    gem2.row_num = temp_row
+    gem2.col_num = temp_col
     
     # update the candies on the board list
-    board[candy1.row_num][candy1.col_num] = candy1
-    board[candy2.row_num][candy2.col_num] = candy2
+    board[gem1.row_num][gem1.col_num] = gem1
+    board[gem2.row_num][gem2.col_num] = gem2
     
     # snap them into their board positions
-    candy1.snap()
-    candy2.snap()
+    gem1.snap()
+    gem2.snap()
     
 
-def find_matches(candy, matches):
+def find_matches(gem, matches):
     
-    # add the candy to the set
-    matches.add(candy)
+    # add the gem to the set
+    matches.add(gem)
     
-    # check the candy above if it's the same color
-    if candy.row_num > 0:
-        neighbor = board[candy.row_num - 1][candy.col_num]
-        if candy.color == neighbor.color and neighbor not in matches:
+    # check the gem above if it's the same color
+    if gem.row_num > 0:
+        neighbor = board[gem.row_num - 1][gem.col_num]
+        if gem.color == neighbor.color and neighbor not in matches:
             matches.update(find_matches(neighbor, matches))
             
-    # check the candy below if it's the same color
-    if candy.row_num < height / candy_height - 1:
-        neighbor = board[candy.row_num + 1][candy.col_num]
-        if candy.color == neighbor.color and neighbor not in matches:
+    # check the gem below if it's the same color
+    if gem.row_num < height / gem_height - 1:
+        neighbor = board[gem.row_num + 1][gem.col_num]
+        if gem.color == neighbor.color and neighbor not in matches:
             matches.update(find_matches(neighbor, matches))
             
-    # check the candy to the left if it's the same color
-    if candy.col_num > 0:
-        neighbor = board[candy.row_num][candy.col_num - 1]
-        if candy.color == neighbor.color and neighbor not in matches:
+    # check the gem to the left if it's the same color
+    if gem.col_num > 0:
+        neighbor = board[gem.row_num][gem.col_num - 1]
+        if gem.color == neighbor.color and neighbor not in matches:
             matches.update(find_matches(neighbor, matches))
             
-    # check the candy to the right if it's the same color
-    if candy.col_num < width / candy_width - 1:
-        neighbor = board[candy.row_num][candy.col_num + 1]
-        if candy.color == neighbor.color and neighbor not in matches:
+    # check the gem to the right if it's the same color
+    if gem.col_num < width / gem_width - 1:
+        neighbor = board[gem.row_num][gem.col_num + 1]
+        if gem.color == neighbor.color and neighbor not in matches:
             matches.update(find_matches(neighbor, matches))
             
     return matches
     
 
-def match_three(candy):
+def match_three(gem):
     
-    matches = find_matches(candy, set())
+    matches = find_matches(gem, set())
     if len(matches) >= 3:
         return matches
     else:
@@ -226,8 +226,8 @@ def game():
     score = 0
     moves = 0
     time_limit = 10
-    swapped_candy = None
-    clicked_candy = None
+    swapped_gem = None
+    clicked_gem = None
     click_x = None
     click_y = None
     running = True
@@ -238,8 +238,8 @@ def game():
         
         # draw the candies
         for row in board:
-            for candy in row:
-                candy.draw()
+            for gem in row:
+                gem.draw()
         
         # display the score and moves
         font = pygame.font.SysFont('monoface', 18)
@@ -276,32 +276,32 @@ def game():
                 
                 
             # detect mouse click
-            if clicked_candy is None and event.type == MOUSEBUTTONDOWN:
+            if clicked_gem is None and event.type == MOUSEBUTTONDOWN:
                 
-                # get the candy that was clicked on
+                # get the gem that was clicked on
                 for row in board:
-                    for candy in row:
-                        if candy.rect.collidepoint(event.pos):
+                    for gem in row:
+                        if gem.rect.collidepoint(event.pos):
                             
-                            clicked_candy = candy
+                            clicked_gem = gem
                             
                             # save the coordinates of the point where the user clicked
                             click_x = event.pos[0]
                             click_y = event.pos[1]
                             
             # detect mouse motion
-            if clicked_candy is not None and event.type == MOUSEMOTION:
+            if clicked_gem is not None and event.type == MOUSEMOTION:
                 
                 # calculate the distance between the point the user clicked on
                 # and the current location of the mouse cursor
                 distance_x = abs(click_x - event.pos[0])
                 distance_y = abs(click_y - event.pos[1])
                 
-                # reset the position of the swapped candy if direction of mouse motion changed
-                if swapped_candy is not None:
-                    swapped_candy.snap()
+                # reset the position of the swapped gem if direction of mouse motion changed
+                if swapped_gem is not None:
+                    swapped_gem.snap()
                     
-                # determine the direction of the neighboring candy to swap with
+                # determine the direction of the neighboring gem to swap with
                 if distance_x > distance_y and click_x > event.pos[0]:
                     direction = 'left'
                 elif distance_x > distance_y and click_x < event.pos[0]:
@@ -311,102 +311,102 @@ def game():
                 else:
                     direction = 'down'
                     
-                # if moving left/right, snap the clicked candy to its row position
+                # if moving left/right, snap the clicked gem to its row position
                 # otherwise, snap it to its col position
                 if direction in ['left', 'right']:
-                    clicked_candy.snap_row()
+                    clicked_gem.snap_row()
                 else:
-                    clicked_candy.snap_col()
+                    clicked_gem.snap_col()
                     
-                # if moving the clicked candy to the left,
+                # if moving the clicked gem to the left,
                 # make sureit's not on the first col
-                if direction == 'left' and clicked_candy.col_num > 0:
+                if direction == 'left' and clicked_gem.col_num > 0:
                     
-                    # get the candy to the left
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num - 1]
+                    # get the gem to the left
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num - 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width - distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width + distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width - distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width + distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left <= swapped_candy.col_num * candy_width + candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left <= swapped_gem.col_num * gem_width + gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy to the right,
+                # if moving the clicked gem to the right,
                 # make sure it's not on the last col
-                if direction == 'right' and clicked_candy.col_num < width / candy_width - 1:
+                if direction == 'right' and clicked_gem.col_num < width / gem_width - 1:
                     
-                    # get the candy to the right
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num + 1]
+                    # get the gem to the right
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num + 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width + distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width - distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width + distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width - distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left >= swapped_candy.col_num * candy_width - candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left >= swapped_gem.col_num * gem_width - gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy up,
+                # if moving the clicked gem up,
                 # make sure it's not on the first row
-                if direction == 'up' and clicked_candy.row_num > 0:
+                if direction == 'up' and clicked_gem.row_num > 0:
                     
-                    # get the candy above
-                    swapped_candy = board[clicked_candy.row_num - 1][clicked_candy.col_num]
+                    # get the gem above
+                    swapped_gem = board[clicked_gem.row_num - 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height - distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height + distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height - distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height + distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top <= swapped_candy.row_num * candy_height + candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top <= swapped_gem.row_num * gem_height + gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy down,
+                # if moving the clicked gem down,
                 # make sure it's not on the last row
-                if direction == 'down' and clicked_candy.row_num < height / candy_height - 1:
+                if direction == 'down' and clicked_gem.row_num < height / gem_height - 1:
                     
-                    # get the candy below
-                    swapped_candy = board[clicked_candy.row_num + 1][clicked_candy.col_num]
+                    # get the gem below
+                    swapped_gem = board[clicked_gem.row_num + 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height + distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height - distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height + distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height - distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top >= swapped_candy.row_num * candy_height - candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top >= swapped_gem.row_num * gem_height - gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
             # detect mouse release
-            if clicked_candy is not None and event.type == MOUSEBUTTONUP:
+            if clicked_gem is not None and event.type == MOUSEBUTTONUP:
                 
                 # snap the candies back to their original positions on the grid
-                clicked_candy.snap()
-                clicked_candy = None
-                if swapped_candy is not None:
-                    swapped_candy.snap()
-                    swapped_candy = None
+                clicked_gem.snap()
+                clicked_gem = None
+                if swapped_gem is not None:
+                    swapped_gem.snap()
+                    swapped_gem = None
                 
         draw()
         pygame.display.update()
@@ -423,23 +423,23 @@ def game():
                 clock.tick(100)
                 
                 # decrease width and height by 1
-                for candy in matches:
-                    new_width = candy.image.get_width() - 1
-                    new_height = candy.image.get_height() - 1
+                for gem in matches:
+                    new_width = gem.image.get_width() - 1
+                    new_height = gem.image.get_height() - 1
                     new_size = (new_width, new_height)
-                    candy.image = pygame.transform.smoothscale(candy.image, new_size)
-                    candy.rect.left = candy.col_num * candy_width + (candy_width - new_width) / 2
-                    candy.rect.top = candy.row_num * candy_height + (candy_height - new_height) / 2
+                    gem.image = pygame.transform.smoothscale(gem.image, new_size)
+                    gem.rect.left = gem.col_num * gem_width + (gem_width - new_width) / 2
+                    gem.rect.top = gem.row_num * gem_height + (gem_height - new_height) / 2
                     
                 # check if the candies have shrunk to zero size
                 for row_num in range(len(board)):
                     for col_num in range(len(board[row_num])):
-                        candy = board[row_num][col_num]
-                        if candy.image.get_width() <= 0 or candy.image.get_height() <= 0:
-                            matches.remove(candy)
+                        gem = board[row_num][col_num]
+                        if gem.image.get_width() <= 0 or gem.image.get_height() <= 0:
+                            matches.remove(gem)
                             
-                            # generate a new candy
-                            board[row_num][col_num] = Candy(row_num, col_num)
+                            # generate a new gem
+                            board[row_num][col_num] = Gem(row_num, col_num)
                 # pygame.mixer.Sound.play(gem_match)            
                 draw()
        
@@ -454,8 +454,8 @@ def level_1():
     score = 0
     moves = 0
     score_limit = 10
-    swapped_candy = None
-    clicked_candy = None
+    swapped_gem = None
+    clicked_gem = None
     click_x = None
     click_y = None
     running = True
@@ -466,8 +466,8 @@ def level_1():
         
         # draw the candies
         for row in board:
-            for candy in row:
-                candy.draw()
+            for gem in row:
+                gem.draw()
         
         # display the score and moves
         font = pygame.font.SysFont('monoface', 18)
@@ -504,32 +504,32 @@ def level_1():
                 running = False
                 
             # detect mouse click
-            if clicked_candy is None and event.type == MOUSEBUTTONDOWN:
+            if clicked_gem is None and event.type == MOUSEBUTTONDOWN:
                 
-                # get the candy that was clicked on
+                # get the gem that was clicked on
                 for row in board:
-                    for candy in row:
-                        if candy.rect.collidepoint(event.pos):
+                    for gem in row:
+                        if gem.rect.collidepoint(event.pos):
                             
-                            clicked_candy = candy
+                            clicked_gem = gem
                             
                             # save the coordinates of the point where the user clicked
                             click_x = event.pos[0]
                             click_y = event.pos[1]
                             
             # detect mouse motion
-            if clicked_candy is not None and event.type == MOUSEMOTION:
+            if clicked_gem is not None and event.type == MOUSEMOTION:
                 
                 # calculate the distance between the point the user clicked on
                 # and the current location of the mouse cursor
                 distance_x = abs(click_x - event.pos[0])
                 distance_y = abs(click_y - event.pos[1])
                 
-                # reset the position of the swapped candy if direction of mouse motion changed
-                if swapped_candy is not None:
-                    swapped_candy.snap()
+                # reset the position of the swapped gem if direction of mouse motion changed
+                if swapped_gem is not None:
+                    swapped_gem.snap()
                     
-                # determine the direction of the neighboring candy to swap with
+                # determine the direction of the neighboring gem to swap with
                 if distance_x > distance_y and click_x > event.pos[0]:
                     direction = 'left'
                 elif distance_x > distance_y and click_x < event.pos[0]:
@@ -539,102 +539,102 @@ def level_1():
                 else:
                     direction = 'down'
                     
-                # if moving left/right, snap the clicked candy to its row position
+                # if moving left/right, snap the clicked gem to its row position
                 # otherwise, snap it to its col position
                 if direction in ['left', 'right']:
-                    clicked_candy.snap_row()
+                    clicked_gem.snap_row()
                 else:
-                    clicked_candy.snap_col()
+                    clicked_gem.snap_col()
                     
-                # if moving the clicked candy to the left,
+                # if moving the clicked gem to the left,
                 # make sureit's not on the first col
-                if direction == 'left' and clicked_candy.col_num > 0:
+                if direction == 'left' and clicked_gem.col_num > 0:
                     
-                    # get the candy to the left
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num - 1]
+                    # get the gem to the left
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num - 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width - distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width + distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width - distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width + distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left <= swapped_candy.col_num * candy_width + candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left <= swapped_gem.col_num * gem_width + gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy to the right,
+                # if moving the clicked gem to the right,
                 # make sure it's not on the last col
-                if direction == 'right' and clicked_candy.col_num < width / candy_width - 1:
+                if direction == 'right' and clicked_gem.col_num < width / gem_width - 1:
                     
-                    # get the candy to the right
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num + 1]
+                    # get the gem to the right
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num + 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width + distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width - distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width + distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width - distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left >= swapped_candy.col_num * candy_width - candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left >= swapped_gem.col_num * gem_width - gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy up,
+                # if moving the clicked gem up,
                 # make sure it's not on the first row
-                if direction == 'up' and clicked_candy.row_num > 0:
+                if direction == 'up' and clicked_gem.row_num > 0:
                     
-                    # get the candy above
-                    swapped_candy = board[clicked_candy.row_num - 1][clicked_candy.col_num]
+                    # get the gem above
+                    swapped_gem = board[clicked_gem.row_num - 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height - distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height + distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height - distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height + distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top <= swapped_candy.row_num * candy_height + candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top <= swapped_gem.row_num * gem_height + gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy down,
+                # if moving the clicked gem down,
                 # make sure it's not on the last row
-                if direction == 'down' and clicked_candy.row_num < height / candy_height - 1:
+                if direction == 'down' and clicked_gem.row_num < height / gem_height - 1:
                     
-                    # get the candy below
-                    swapped_candy = board[clicked_candy.row_num + 1][clicked_candy.col_num]
+                    # get the gem below
+                    swapped_gem = board[clicked_gem.row_num + 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height + distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height - distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height + distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height - distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top >= swapped_candy.row_num * candy_height - candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top >= swapped_gem.row_num * gem_height - gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
             # detect mouse release
-            if clicked_candy is not None and event.type == MOUSEBUTTONUP:
+            if clicked_gem is not None and event.type == MOUSEBUTTONUP:
                 
                 # snap the candies back to their original positions on the grid
-                clicked_candy.snap()
-                clicked_candy = None
-                if swapped_candy is not None:
-                    swapped_candy.snap()
-                    swapped_candy = None
+                clicked_gem.snap()
+                clicked_gem = None
+                if swapped_gem is not None:
+                    swapped_gem.snap()
+                    swapped_gem = None
                 
         draw()
         pygame.display.update()
@@ -651,23 +651,23 @@ def level_1():
                 clock.tick(100)
                 
                 # decrease width and height by 1
-                for candy in matches:
-                    new_width = candy.image.get_width() - 1
-                    new_height = candy.image.get_height() - 1
+                for gem in matches:
+                    new_width = gem.image.get_width() - 1
+                    new_height = gem.image.get_height() - 1
                     new_size = (new_width, new_height)
-                    candy.image = pygame.transform.smoothscale(candy.image, new_size)
-                    candy.rect.left = candy.col_num * candy_width + (candy_width - new_width) / 2
-                    candy.rect.top = candy.row_num * candy_height + (candy_height - new_height) / 2
+                    gem.image = pygame.transform.smoothscale(gem.image, new_size)
+                    gem.rect.left = gem.col_num * gem_width + (gem_width - new_width) / 2
+                    gem.rect.top = gem.row_num * gem_height + (gem_height - new_height) / 2
                     
                 # check if the candies have shrunk to zero size
                 for row_num in range(len(board)):
                     for col_num in range(len(board[row_num])):
-                        candy = board[row_num][col_num]
-                        if candy.image.get_width() <= 0 or candy.image.get_height() <= 0:
-                            matches.remove(candy)
+                        gem = board[row_num][col_num]
+                        if gem.image.get_width() <= 0 or gem.image.get_height() <= 0:
+                            matches.remove(gem)
                             
-                            # generate a new candy
-                            board[row_num][col_num] = Candy(row_num, col_num)
+                            # generate a new gem
+                            board[row_num][col_num] = Gem(row_num, col_num)
                 pygame.mixer.Sound.play(gem_match)                        
                 draw()
        
@@ -677,8 +677,8 @@ def level_2():
     score = 0
     moves = 0
     score_limit = 50
-    swapped_candy = None
-    clicked_candy = None
+    swapped_gem = None
+    clicked_gem = None
     click_x = None
     click_y = None
     running = True
@@ -689,8 +689,8 @@ def level_2():
         
         # draw the candies
         for row in board:
-            for candy in row:
-                candy.draw()
+            for gem in row:
+                gem.draw()
         
         # display the score and moves
         font = pygame.font.SysFont('monoface', 18)
@@ -726,32 +726,32 @@ def level_2():
                 running = False
                 
             # detect mouse click
-            if clicked_candy is None and event.type == MOUSEBUTTONDOWN:
+            if clicked_gem is None and event.type == MOUSEBUTTONDOWN:
                 
-                # get the candy that was clicked on
+                # get the gem that was clicked on
                 for row in board:
-                    for candy in row:
-                        if candy.rect.collidepoint(event.pos):
+                    for gem in row:
+                        if gem.rect.collidepoint(event.pos):
                             
-                            clicked_candy = candy
+                            clicked_gem = gem
                             
                             # save the coordinates of the point where the user clicked
                             click_x = event.pos[0]
                             click_y = event.pos[1]
                             
             # detect mouse motion
-            if clicked_candy is not None and event.type == MOUSEMOTION:
+            if clicked_gem is not None and event.type == MOUSEMOTION:
                 
                 # calculate the distance between the point the user clicked on
                 # and the current location of the mouse cursor
                 distance_x = abs(click_x - event.pos[0])
                 distance_y = abs(click_y - event.pos[1])
                 
-                # reset the position of the swapped candy if direction of mouse motion changed
-                if swapped_candy is not None:
-                    swapped_candy.snap()
+                # reset the position of the swapped gem if direction of mouse motion changed
+                if swapped_gem is not None:
+                    swapped_gem.snap()
                     
-                # determine the direction of the neighboring candy to swap with
+                # determine the direction of the neighboring gem to swap with
                 if distance_x > distance_y and click_x > event.pos[0]:
                     direction = 'left'
                 elif distance_x > distance_y and click_x < event.pos[0]:
@@ -761,102 +761,102 @@ def level_2():
                 else:
                     direction = 'down'
                     
-                # if moving left/right, snap the clicked candy to its row position
+                # if moving left/right, snap the clicked gem to its row position
                 # otherwise, snap it to its col position
                 if direction in ['left', 'right']:
-                    clicked_candy.snap_row()
+                    clicked_gem.snap_row()
                 else:
-                    clicked_candy.snap_col()
+                    clicked_gem.snap_col()
                     
-                # if moving the clicked candy to the left,
+                # if moving the clicked gem to the left,
                 # make sureit's not on the first col
-                if direction == 'left' and clicked_candy.col_num > 0:
+                if direction == 'left' and clicked_gem.col_num > 0:
                     
-                    # get the candy to the left
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num - 1]
+                    # get the gem to the left
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num - 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width - distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width + distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width - distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width + distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left <= swapped_candy.col_num * candy_width + candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left <= swapped_gem.col_num * gem_width + gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy to the right,
+                # if moving the clicked gem to the right,
                 # make sure it's not on the last col
-                if direction == 'right' and clicked_candy.col_num < width / candy_width - 1:
+                if direction == 'right' and clicked_gem.col_num < width / gem_width - 1:
                     
-                    # get the candy to the right
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num + 1]
+                    # get the gem to the right
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num + 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width + distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width - distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width + distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width - distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left >= swapped_candy.col_num * candy_width - candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left >= swapped_gem.col_num * gem_width - gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy up,
+                # if moving the clicked gem up,
                 # make sure it's not on the first row
-                if direction == 'up' and clicked_candy.row_num > 0:
+                if direction == 'up' and clicked_gem.row_num > 0:
                     
-                    # get the candy above
-                    swapped_candy = board[clicked_candy.row_num - 1][clicked_candy.col_num]
+                    # get the gem above
+                    swapped_gem = board[clicked_gem.row_num - 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height - distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height + distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height - distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height + distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top <= swapped_candy.row_num * candy_height + candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top <= swapped_gem.row_num * gem_height + gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy down,
+                # if moving the clicked gem down,
                 # make sure it's not on the last row
-                if direction == 'down' and clicked_candy.row_num < height / candy_height - 1:
+                if direction == 'down' and clicked_gem.row_num < height / gem_height - 1:
                     
-                    # get the candy below
-                    swapped_candy = board[clicked_candy.row_num + 1][clicked_candy.col_num]
+                    # get the gem below
+                    swapped_gem = board[clicked_gem.row_num + 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height + distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height - distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height + distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height - distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top >= swapped_candy.row_num * candy_height - candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top >= swapped_gem.row_num * gem_height - gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
             # detect mouse release
-            if clicked_candy is not None and event.type == MOUSEBUTTONUP:
+            if clicked_gem is not None and event.type == MOUSEBUTTONUP:
                 
                 # snap the candies back to their original positions on the grid
-                clicked_candy.snap()
-                clicked_candy = None
-                if swapped_candy is not None:
-                    swapped_candy.snap()
-                    swapped_candy = None
+                clicked_gem.snap()
+                clicked_gem = None
+                if swapped_gem is not None:
+                    swapped_gem.snap()
+                    swapped_gem = None
                 
         draw()
         pygame.display.update()
@@ -873,23 +873,23 @@ def level_2():
                 clock.tick(100)
                 
                 # decrease width and height by 1
-                for candy in matches:
-                    new_width = candy.image.get_width() - 1
-                    new_height = candy.image.get_height() - 1
+                for gem in matches:
+                    new_width = gem.image.get_width() - 1
+                    new_height = gem.image.get_height() - 1
                     new_size = (new_width, new_height)
-                    candy.image = pygame.transform.smoothscale(candy.image, new_size)
-                    candy.rect.left = candy.col_num * candy_width + (candy_width - new_width) / 2
-                    candy.rect.top = candy.row_num * candy_height + (candy_height - new_height) / 2
+                    gem.image = pygame.transform.smoothscale(gem.image, new_size)
+                    gem.rect.left = gem.col_num * gem_width + (gem_width - new_width) / 2
+                    gem.rect.top = gem.row_num * gem_height + (gem_height - new_height) / 2
                     
                 # check if the candies have shrunk to zero size
                 for row_num in range(len(board)):
                     for col_num in range(len(board[row_num])):
-                        candy = board[row_num][col_num]
-                        if candy.image.get_width() <= 0 or candy.image.get_height() <= 0:
-                            matches.remove(candy)
+                        gem = board[row_num][col_num]
+                        if gem.image.get_width() <= 0 or gem.image.get_height() <= 0:
+                            matches.remove(gem)
                             
-                            # generate a new candy
-                            board[row_num][col_num] = Candy(row_num, col_num)
+                            # generate a new gem
+                            board[row_num][col_num] = Gem(row_num, col_num)
                 pygame.mixer.Sound.play(gem_match)                        
                 draw()
        
@@ -900,8 +900,8 @@ def level_3():
     score = 0
     moves = 0
     score_limit = 500
-    swapped_candy = None
-    clicked_candy = None
+    swapped_gem = None
+    clicked_gem = None
     click_x = None
     click_y = None
     running = True
@@ -913,8 +913,8 @@ def level_3():
         
         # draw the candies
         for row in board:
-            for candy in row:
-                candy.draw()
+            for gem in row:
+                gem.draw()
         
         # display the score and moves
         font = pygame.font.SysFont('monoface', 18)
@@ -950,32 +950,32 @@ def level_3():
                 running = False
                 
             # detect mouse click
-            if clicked_candy is None and event.type == MOUSEBUTTONDOWN:
+            if clicked_gem is None and event.type == MOUSEBUTTONDOWN:
                 
-                # get the candy that was clicked on
+                # get the gem that was clicked on
                 for row in board:
-                    for candy in row:
-                        if candy.rect.collidepoint(event.pos):
+                    for gem in row:
+                        if gem.rect.collidepoint(event.pos):
                             
-                            clicked_candy = candy
+                            clicked_gem = gem
                             
                             # save the coordinates of the point where the user clicked
                             click_x = event.pos[0]
                             click_y = event.pos[1]
                             
             # detect mouse motion
-            if clicked_candy is not None and event.type == MOUSEMOTION:
+            if clicked_gem is not None and event.type == MOUSEMOTION:
                 
                 # calculate the distance between the point the user clicked on
                 # and the current location of the mouse cursor
                 distance_x = abs(click_x - event.pos[0])
                 distance_y = abs(click_y - event.pos[1])
                 
-                # reset the position of the swapped candy if direction of mouse motion changed
-                if swapped_candy is not None:
-                    swapped_candy.snap()
+                # reset the position of the swapped gem if direction of mouse motion changed
+                if swapped_gem is not None:
+                    swapped_gem.snap()
                     
-                # determine the direction of the neighboring candy to swap with
+                # determine the direction of the neighboring gem to swap with
                 if distance_x > distance_y and click_x > event.pos[0]:
                     direction = 'left'
                 elif distance_x > distance_y and click_x < event.pos[0]:
@@ -985,102 +985,102 @@ def level_3():
                 else:
                     direction = 'down'
                     
-                # if moving left/right, snap the clicked candy to its row position
+                # if moving left/right, snap the clicked gem to its row position
                 # otherwise, snap it to its col position
                 if direction in ['left', 'right']:
-                    clicked_candy.snap_row()
+                    clicked_gem.snap_row()
                 else:
-                    clicked_candy.snap_col()
+                    clicked_gem.snap_col()
                     
-                # if moving the clicked candy to the left,
+                # if moving the clicked gem to the left,
                 # make sureit's not on the first col
-                if direction == 'left' and clicked_candy.col_num > 0:
+                if direction == 'left' and clicked_gem.col_num > 0:
                     
-                    # get the candy to the left
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num - 1]
+                    # get the gem to the left
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num - 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width - distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width + distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width - distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width + distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left <= swapped_candy.col_num * candy_width + candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left <= swapped_gem.col_num * gem_width + gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy to the right,
+                # if moving the clicked gem to the right,
                 # make sure it's not on the last col
-                if direction == 'right' and clicked_candy.col_num < width / candy_width - 1:
+                if direction == 'right' and clicked_gem.col_num < width / gem_width - 1:
                     
-                    # get the candy to the right
-                    swapped_candy = board[clicked_candy.row_num][clicked_candy.col_num + 1]
+                    # get the gem to the right
+                    swapped_gem = board[clicked_gem.row_num][clicked_gem.col_num + 1]
                     
                     # move the two candies
-                    clicked_candy.rect.left = clicked_candy.col_num * candy_width + distance_x
-                    swapped_candy.rect.left = swapped_candy.col_num * candy_width - distance_x
+                    clicked_gem.rect.left = clicked_gem.col_num * gem_width + distance_x
+                    swapped_gem.rect.left = swapped_gem.col_num * gem_width - distance_x
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.left >= swapped_candy.col_num * candy_width - candy_width / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.left >= swapped_gem.col_num * gem_width - gem_width / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy up,
+                # if moving the clicked gem up,
                 # make sure it's not on the first row
-                if direction == 'up' and clicked_candy.row_num > 0:
+                if direction == 'up' and clicked_gem.row_num > 0:
                     
-                    # get the candy above
-                    swapped_candy = board[clicked_candy.row_num - 1][clicked_candy.col_num]
+                    # get the gem above
+                    swapped_gem = board[clicked_gem.row_num - 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height - distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height + distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height - distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height + distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top <= swapped_candy.row_num * candy_height + candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top <= swapped_gem.row_num * gem_height + gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
-                # if moving the clicked candy down,
+                # if moving the clicked gem down,
                 # make sure it's not on the last row
-                if direction == 'down' and clicked_candy.row_num < height / candy_height - 1:
+                if direction == 'down' and clicked_gem.row_num < height / gem_height - 1:
                     
-                    # get the candy below
-                    swapped_candy = board[clicked_candy.row_num + 1][clicked_candy.col_num]
+                    # get the gem below
+                    swapped_gem = board[clicked_gem.row_num + 1][clicked_gem.col_num]
                     
                     # move the two candies
-                    clicked_candy.rect.top = clicked_candy.row_num * candy_height + distance_y
-                    swapped_candy.rect.top = swapped_candy.row_num * candy_height - distance_y
+                    clicked_gem.rect.top = clicked_gem.row_num * gem_height + distance_y
+                    swapped_gem.rect.top = swapped_gem.row_num * gem_height - distance_y
                     
                     # snap them into their new positions on the board
-                    if clicked_candy.rect.top >= swapped_candy.row_num * candy_height - candy_height / 4:
-                        swap(clicked_candy, swapped_candy)
-                        matches.update(match_three(clicked_candy))
-                        matches.update(match_three(swapped_candy))
+                    if clicked_gem.rect.top >= swapped_gem.row_num * gem_height - gem_height / 4:
+                        swap(clicked_gem, swapped_gem)
+                        matches.update(match_three(clicked_gem))
+                        matches.update(match_three(swapped_gem))
                         moves += 1
-                        clicked_candy = None
-                        swapped_candy = None
+                        clicked_gem = None
+                        swapped_gem = None
                         
             # detect mouse release
-            if clicked_candy is not None and event.type == MOUSEBUTTONUP:
+            if clicked_gem is not None and event.type == MOUSEBUTTONUP:
                 
                 # snap the candies back to their original positions on the grid
-                clicked_candy.snap()
-                clicked_candy = None
-                if swapped_candy is not None:
-                    swapped_candy.snap()
-                    swapped_candy = None
+                clicked_gem.snap()
+                clicked_gem = None
+                if swapped_gem is not None:
+                    swapped_gem.snap()
+                    swapped_gem = None
                 
         draw()
         pygame.display.update()
@@ -1097,23 +1097,23 @@ def level_3():
                 clock.tick(100)
                 
                 # decrease width and height by 1
-                for candy in matches:
-                    new_width = candy.image.get_width() - 1
-                    new_height = candy.image.get_height() - 1
+                for gem in matches:
+                    new_width = gem.image.get_width() - 1
+                    new_height = gem.image.get_height() - 1
                     new_size = (new_width, new_height)
-                    candy.image = pygame.transform.smoothscale(candy.image, new_size)
-                    candy.rect.left = candy.col_num * candy_width + (candy_width - new_width) / 2
-                    candy.rect.top = candy.row_num * candy_height + (candy_height - new_height) / 2
+                    gem.image = pygame.transform.smoothscale(gem.image, new_size)
+                    gem.rect.left = gem.col_num * gem_width + (gem_width - new_width) / 2
+                    gem.rect.top = gem.row_num * gem_height + (gem_height - new_height) / 2
                     
                 # check if the candies have shrunk to zero size
                 for row_num in range(len(board)):
                     for col_num in range(len(board[row_num])):
-                        candy = board[row_num][col_num]
-                        if candy.image.get_width() <= 0 or candy.image.get_height() <= 0:
-                            matches.remove(candy)
+                        gem = board[row_num][col_num]
+                        if gem.image.get_width() <= 0 or gem.image.get_height() <= 0:
+                            matches.remove(gem)
                             
-                            # generate a new candy
-                            board[row_num][col_num] = Candy(row_num, col_num)
+                            # generate a new gem
+                            board[row_num][col_num] = Gem(row_num, col_num)
                 pygame.mixer.Sound.play(gem_match)                        
                 draw()
        
