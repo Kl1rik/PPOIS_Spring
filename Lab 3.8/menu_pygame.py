@@ -6,10 +6,10 @@ import time
 import datetime
 import sqlite3
 import math
-import sys
 import os
 from ScoreTable import formalize_rows as rows
 from ScoreTable import find_max,insert
+
 pygame.init()
 pygame.mixer.init()
 pygame.display.set_caption('Jewel quest')
@@ -34,11 +34,9 @@ gem_size = (gem_width, gem_height)
 class Gem:
     
     def __init__(self, row_num, col_num):
-        
         # set the gem's position on the board
         self.row_num = row_num
         self.col_num = col_num
-        
         # assign a random image
         self.color = random.choice(gem_colors)
         image_name = f'swirl_{self.color}.png'
@@ -225,7 +223,7 @@ def game():
     screen.fill((139, 0, 139))
     score = 0
     moves = 0
-    time_limit = 10
+    time_limit = 60
     swapped_gem = None
     clicked_gem = None
     click_x = None
